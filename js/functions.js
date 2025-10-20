@@ -9,7 +9,7 @@ const isPalindrome = (input) => {
   return normalized === reversed;
 };
 
-console.log(checkLength('Hello', 5));
-console.log(isPalindrome('Лёша на полке клопа нашёл '));
-
+//console.log(checkLength('Hello', 5));
+//console.log(isPalindrome('Лёша на полке клопа нашёл '));
+export {checkLength, isPalindrome};
 
