@@ -1,4 +1,5 @@
-const picturesContainer = document.querySelector('.pictures');
+import { showBigPicture } from './big-pictures.js';
+
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 
@@ -14,10 +15,16 @@ const createPictureElement = (photo) => {
   pictureLikes.textContent = photo.likes;
   pictureComments.textContent = photo.comments.length;
 
+  pictureElement.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    showBigPicture(photo);
+  });
+
   return pictureElement;
 };
 
 const renderPictures = (photos) => {
+  const picturesContainer = document.querySelector('.pictures');
   const fragment = document.createDocumentFragment();
 
   photos.forEach((photo) => {
