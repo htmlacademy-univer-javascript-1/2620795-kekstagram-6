@@ -1,11 +1,10 @@
-import * as utils from './util.js';
-import * as constants from './constants.js';
 import { initGenerators, generatePosts } from './generators.js';
-
+import { renderPictures } from './miniatures.js';
+import * as utils from './utils.js';
+import * as constants from './constants.js';
 
 initGenerators(utils, constants);
 
+const photos = generatePosts(25);
 
-const posts = generatePosts(25);
-export { posts };
-
+renderPictures(photos);
