@@ -24,9 +24,10 @@ const createCommentElement = (comment) => {
 };
 
 const updateCommentCount = () => {
-  const commentCount = document.querySelector('.social__comment-count');
+  const bigPicture = document.querySelector('.big-picture');
+  const commentCount = bigPicture.querySelector('.social__comment-count');
   const totalComments = currentComments.length;
-  commentCount.textContent = `${shownCommentsCount} из ${totalComments} комментариев`;
+  commentCount.innerHTML = `${shownCommentsCount} из <span class="comments-count">${totalComments}</span> комментариев`;
 };
 
 const showMoreComments = () => {
@@ -52,7 +53,7 @@ const showBigPicture = (photo) => {
   const bigPicture = document.querySelector('.big-picture');
   const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
   const likesCount = bigPicture.querySelector('.likes-count');
-  const commentsCount = bigPicture.querySelector('.comments-count');
+  const commentsCount = bigPicture.querySelector('.comments-count'); // span внутри счётчика
   const socialComments = bigPicture.querySelector('.social__comments');
   const socialCaption = bigPicture.querySelector('.social__caption');
   const commentCount = bigPicture.querySelector('.social__comment-count');
@@ -62,7 +63,9 @@ const showBigPicture = (photo) => {
   bigPictureImg.src = photo.url;
   bigPictureImg.alt = photo.description;
   likesCount.textContent = photo.likes;
-  commentsCount.textContent = photo.comments.length;
+  if (commentsCount) {
+    commentsCount.textContent = photo.comments.length;
+  }
   socialCaption.textContent = photo.description;
 
   socialComments.innerHTML = '';
@@ -72,6 +75,7 @@ const showBigPicture = (photo) => {
   commentCount.classList.remove('hidden');
   commentsLoader.classList.remove('hidden');
 
+  updateCommentCount();
   showMoreComments();
 
   bigPicture.classList.remove('hidden');

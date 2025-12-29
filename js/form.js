@@ -6,6 +6,7 @@ const MAX_HASHTAG_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
 const MAX_COMMENT_LENGTH = 140;
 const HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
+const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadInput = document.querySelector('.img-upload__input');
@@ -13,10 +14,29 @@ const uploadOverlay = document.querySelector('.img-upload__overlay');
 const uploadCancel = document.querySelector('.img-upload__cancel');
 const hashtagInput = document.querySelector('.text__hashtags');
 const commentInput = document.querySelector('.text__description');
+const imagePreview = document.querySelector('.img-upload__preview img');
+const effectsPreviews = document.querySelectorAll('.effects__preview');
 const body = document.body;
+
+const DEFAULT_IMAGE_SRC = imagePreview.src;
+
 
 let cancelHandler = null;
 let keydownHandler = null;
+let currentObjectUrl = null;
+
+
+const applyPreviewToEffects = (url) => {
+  effectsPreviews.forEach((el) => {
+    el.style.backgroundImage = `url("${url}")`;
+  });
+};
+
+const clearEffectPreviews = () => {
+  effectsPreviews.forEach((el) => {
+    el.style.backgroundImage = '';
+  });
+};
 
 const validateHashtags = (value) => {
   if (!value.trim()) {
@@ -95,6 +115,14 @@ const closeUploadModal = () => {
 
   resetImageEditor();
 
+  imagePreview.src = DEFAULT_IMAGE_SRC;
+  clearEffectPreviews();
+
+  if (currentObjectUrl) {
+    URL.revokeObjectURL(currentObjectUrl);
+    currentObjectUrl = null;
+  }
+
   if (cancelHandler) {
     uploadCancel.removeEventListener('click', cancelHandler);
     cancelHandler = null;
@@ -131,7 +159,35 @@ const showUploadModal = () => {
 };
 
 const onFileInputChange = () => {
+  const file = uploadInput.files && uploadInput.files[0];
+  if (!file) {
+    return;
+  }
+
+  const fileName = file.name.toLowerCase();
+  const isValid = FILE_TYPES.some((ext) => fileName.endsWith(ext));
+
+  if (!isValid) {
+    uploadInput.setCustomValidity('Неверный формат файла. Загрузите изображение (jpg, jpeg, png, gif, webp).');
+    uploadInput.reportValidity();
+    setTimeout(() => uploadInput.setCustomValidity(''));
+    uploadInput.value = '';
+    return;
+  }
+
+  if (currentObjectUrl) {
+    URL.revokeObjectURL(currentObjectUrl);
+    currentObjectUrl = null;
+  }
+
+  currentObjectUrl = URL.createObjectURL(file);
+  imagePreview.src = currentObjectUrl;
+  applyPreviewToEffects(currentObjectUrl);
+
   showUploadModal();
+  if (typeof resetImageEditor === 'function') {
+    resetImageEditor();
+  }
 };
 
 const onInputKeydown = (evt) => {
