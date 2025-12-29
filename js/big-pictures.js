@@ -99,7 +99,6 @@ const showBigPicture = (photo) => {
   updateCommentCount();
   showMoreComments();
 
-  // Б26: вешаем Esc только на время открытой модалки
   document.addEventListener('keydown', onDocumentKeydown);
 
   bigPicture.classList.remove('hidden');

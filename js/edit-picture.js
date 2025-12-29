@@ -62,7 +62,7 @@ const createSlider = () => {
     step: EFFECTS[currentEffect].step,
     connect: 'lower',
     format: {
-      to: (value) => String(parseFloat(value)), // убираем хвостовые нули
+      to: (value) => String(parseFloat(value)),
       from: (value) => Number(value)
     }
   });

@@ -14,7 +14,6 @@ let originalPhotos = [];
 
 const getRandomUnique = (items, count) => {
   const copy = items.slice();
-  // Перемешиваем Фишер-Йейтсом
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
@@ -72,16 +71,11 @@ const onFiltersClick = (evt) => {
 };
 
 const initFilters = (photos) => {
-  originalPhotos = photos.slice(); // не мутируем исходный порядок
-
-  // 5.2 — показать блок фильтров после загрузки данных
+  originalPhotos = photos.slice();
   imgFilters.classList.remove('img-filters--inactive');
 
-  // Навешиваем обработчик переключения (Б26: один обработчик на форму)
   filterForm.addEventListener('click', onFiltersClick);
 
-  // Стартовое состояние — «По умолчанию» уже активно в разметке; перерисовка не нужна,
-  // т.к. миниатюры уже отрисованы в main.js сразу после загрузки.
 };
 
 export { initFilters };

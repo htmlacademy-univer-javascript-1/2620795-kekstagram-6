@@ -6,7 +6,6 @@ const debounce = (callback, timeoutDelay = 500) => {
   };
 };
 
-// (Опционально) Throttle, если понадобится
 const throttle = (callback, delayBetweenFrames) => {
   let lastTime = 0;
   return (...rest) => {
