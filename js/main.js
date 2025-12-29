@@ -1,16 +1,17 @@
-import { initGenerators, generatePosts } from './generators.js';
+// js/main.js
 import { renderPictures } from './miniatures.js';
-import * as utils from './utils.js';
-import * as constants from './constants.js';
 import { initBigPicture } from './big-pictures.js';
 import { initForm } from './form.js';
-
-initGenerators(utils, constants);
-
-const photos = generatePosts(25);
+import { getData } from './api.js';
+import { showLoadError } from './messages.js';
 
 initBigPicture();
-
 initForm();
 
-renderPictures(photos);
+getData()
+  .then((photos) => {
+    renderPictures(photos);
+  })
+  .catch(() => {
+    showLoadError('Не удалось загрузить изображения. Попробуйте обновить страницу');
+  });

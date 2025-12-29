@@ -1,4 +1,6 @@
 import { initImageEditor, resetImageEditor } from './edit-picture.js';
+import {sendData} from './api';
+import {showErrorMessage, showSuccessMessage} from './messages';
 
 const MAX_HASHTAG_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -138,11 +140,31 @@ const onInputKeydown = (evt) => {
   }
 };
 
-const onFormSubmit = (evt) => {
+const onFormSubmit = async (evt) => {
   evt.preventDefault();
 
-  if (window.pristine && window.pristine.validate()) {
+  if (window.pristine && !window.pristine.validate()) {
+    return;
+  }
+
+  const submitButton = uploadForm.querySelector('.img-upload__submit');
+  const initialText = submitButton.textContent;
+
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикуем…';
+
+  try {
+    const formData = new FormData(uploadForm);
+    await sendData(formData);
+
     closeUploadModal();
+
+    showSuccessMessage();
+  } catch (err) {
+    showErrorMessage();
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = initialText;
   }
 };
 
