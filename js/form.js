@@ -228,8 +228,11 @@ const initPristine = () => {
   if (typeof Pristine !== 'undefined') {
     window.pristine = new Pristine(uploadForm, {
       classTo: 'img-upload__field-wrapper',
+      errorClass: 'img-upload__field-wrapper--error',
+      successClass: 'img-upload__field-wrapper--success',
       errorTextParent: 'img-upload__field-wrapper',
-      errorTextClass: 'img-upload__field-wrapper--error'
+      errorTextTag: 'div',
+      errorTextClass: 'pristine-error'
     });
 
     window.pristine.addValidator(hashtagInput, validateHashtags, getHashtagErrorMessage);

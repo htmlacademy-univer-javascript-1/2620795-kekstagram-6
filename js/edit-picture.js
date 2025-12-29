@@ -60,9 +60,14 @@ const createSlider = () => {
     range: EFFECTS[currentEffect].range,
     start: EFFECTS[currentEffect].range.max,
     step: EFFECTS[currentEffect].step,
-    connect: 'lower'
+    connect: 'lower',
+    format: {
+      to: (value) => String(parseFloat(value)), // убираем хвостовые нули
+      from: (value) => Number(value)
+    }
   });
 };
+
 
 const updateSlider = () => {
   if (slider) {
@@ -84,8 +89,9 @@ const updateSlider = () => {
 
   slider.on('update', (values) => {
     const val = values[0];
-    effectLevelValue.value = val;
-    updateImageEffect(val);
+    const normalized = String(parseFloat(val));
+    effectLevelValue.value = normalized;
+    updateImageEffect(normalized);
   });
 
   const startVal = EFFECTS[currentEffect].range.max;

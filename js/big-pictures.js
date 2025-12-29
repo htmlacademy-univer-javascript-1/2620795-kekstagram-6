@@ -4,7 +4,6 @@ let currentComments = [];
 let shownCommentsCount = 0;
 
 const createCommentElement = (comment) => {
-  // здесь выполнен критерий, защита от XSS атак. Пожалуйста, зачтите его
   const li = document.createElement('li');
   li.classList.add('social__comment');
 
@@ -34,12 +33,15 @@ const showMoreComments = () => {
   const socialComments = document.querySelector('.social__comments');
   const commentsLoader = document.querySelector('.comments-loader');
   const commentsToShow = Math.min(COMMENTS_PER_LOAD, currentComments.length - shownCommentsCount);
+
   for (let i = shownCommentsCount; i < shownCommentsCount + commentsToShow; i++) {
     const commentElement = createCommentElement(currentComments[i]);
     socialComments.appendChild(commentElement);
   }
+
   shownCommentsCount += commentsToShow;
   updateCommentCount();
+
   if (shownCommentsCount >= currentComments.length) {
     commentsLoader.classList.add('hidden');
   }
@@ -48,6 +50,25 @@ const showMoreComments = () => {
 const onLoadCommentsClick = () => {
   showMoreComments();
 };
+
+function onDocumentKeydown(evt) {
+  if (evt.key === 'Escape') {
+    closeBigPicture();
+  }
+}
+
+function closeBigPicture() {
+  const bigPicture = document.querySelector('.big-picture');
+  const body = document.body;
+
+  bigPicture.classList.add('hidden');
+  body.classList.remove('modal-open');
+
+  currentComments = [];
+  shownCommentsCount = 0;
+
+  document.removeEventListener('keydown', onDocumentKeydown);
+}
 
 const showBigPicture = (photo) => {
   const bigPicture = document.querySelector('.big-picture');
@@ -78,28 +99,15 @@ const showBigPicture = (photo) => {
   updateCommentCount();
   showMoreComments();
 
+  // Б26: вешаем Esc только на время открытой модалки
+  document.addEventListener('keydown', onDocumentKeydown);
+
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
 };
 
-const closeBigPicture = () => {
-  const bigPicture = document.querySelector('.big-picture');
-  const body = document.body;
-
-  bigPicture.classList.add('hidden');
-  body.classList.remove('modal-open');
-  currentComments = [];
-  shownCommentsCount = 0;
-};
-
 const onCloseButtonClick = () => {
   closeBigPicture();
-};
-
-const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape') {
-    closeBigPicture();
-  }
 };
 
 const initBigPicture = () => {
@@ -109,7 +117,6 @@ const initBigPicture = () => {
 
   closeButton.addEventListener('click', onCloseButtonClick);
   loadCommentsButton.addEventListener('click', onLoadCommentsClick);
-  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 export { showBigPicture, initBigPicture };

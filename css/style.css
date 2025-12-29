@@ -1395,3 +1395,12 @@ main {
 .hidden {
   display: none;
 }
+.img-upload__field-wrapper--error input,
+.img-upload__field-wrapper--error textarea {
+  border-color: #ef3f4a;
+}
+.pristine-error {
+  color: #ef3f4a;
+  font-size: 12px;
+  margin-top: 4px;
+}
