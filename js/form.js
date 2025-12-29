@@ -1,6 +1,6 @@
 import { initImageEditor, resetImageEditor } from './edit-picture.js';
-import {sendData} from './api';
-import {showErrorMessage, showSuccessMessage} from './messages';
+import { sendData } from './api.js';
+import { showErrorMessage, showSuccessMessage } from './messages.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;

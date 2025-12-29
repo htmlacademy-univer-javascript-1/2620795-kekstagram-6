@@ -2,7 +2,6 @@ import { showBigPicture } from './big-pictures.js';
 
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-
 const createPictureElement = (photo) => {
   const pictureElement = pictureTemplate.cloneNode(true);
 
@@ -23,6 +22,10 @@ const createPictureElement = (photo) => {
   return pictureElement;
 };
 
+const clearPictures = () => {
+  document.querySelectorAll('.pictures .picture').forEach((el) => el.remove());
+};
+
 const renderPictures = (photos) => {
   const picturesContainer = document.querySelector('.pictures');
   const fragment = document.createDocumentFragment();
@@ -35,4 +38,4 @@ const renderPictures = (photos) => {
   picturesContainer.appendChild(fragment);
 };
 
-export { renderPictures };
+export { renderPictures, clearPictures };

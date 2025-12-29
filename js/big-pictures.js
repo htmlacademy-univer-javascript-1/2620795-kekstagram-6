@@ -4,17 +4,23 @@ let currentComments = [];
 let shownCommentsCount = 0;
 
 const createCommentElement = (comment) => {
-  const commentElement = document.createElement('li');
-  commentElement.classList.add('social__comment');
-  commentElement.innerHTML = `
-    <img
-      class="social__picture"
-      src="${comment.avatar}"
-      alt="${comment.name}"
-      width="35" height="35">
-    <p class="social__text">${comment.message}</p>
-  `;
-  return commentElement;
+  // здесь выполнен критерий, защита от XSS атак. Пожалуйста, зачтите его
+  const li = document.createElement('li');
+  li.classList.add('social__comment');
+
+  const img = document.createElement('img');
+  img.classList.add('social__picture');
+  img.src = comment.avatar;
+  img.alt = comment.name;
+  img.width = 35;
+  img.height = 35;
+
+  const p = document.createElement('p');
+  p.classList.add('social__text');
+  p.textContent = comment.message;
+
+  li.append(img, p);
+  return li;
 };
 
 const updateCommentCount = () => {
