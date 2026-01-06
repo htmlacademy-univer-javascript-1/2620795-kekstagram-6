@@ -23,7 +23,7 @@ const createPictureElement = (photo) => {
 };
 
 const clearPictures = () => {
-  document.querySelectorAll('.pictures .picture').forEach((el) => el.remove());
+  document.querySelectorAll('.pictures .picture').forEach((element) => element.remove());
 };
 
 const renderPictures = (photos) => {

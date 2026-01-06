@@ -1,3 +1,4 @@
+import { isEscapeKey } from './utils.js';
 
 const body = document.body;
 
@@ -19,26 +20,26 @@ const showLoadError = (message = 'Не удалось загрузить дан�
 };
 
 const setupClosableOverlay = (element, closeButtonSelector) => {
-  const onDocumentKeydown = (evt) => {
-    if (evt.key === 'Escape') {
+  function onDocumentKeydown(evt) {
+    if (isEscapeKey(evt)) {
       close();
     }
-  };
+  }
 
-  const onDocumentClick = (evt) => {
+  function onDocumentClick(evt) {
     const inner = element.querySelector('section');
     if (inner && !inner.contains(evt.target)) {
       close();
     }
-  };
-
-  const onButtonClick = () => close();
+  }
 
   function close() {
     element.remove();
     document.removeEventListener('keydown', onDocumentKeydown);
     document.removeEventListener('click', onDocumentClick);
   }
+
+  const onButtonClick = () => close();
 
   const button = element.querySelector(closeButtonSelector);
   if (button) {

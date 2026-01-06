@@ -1,6 +1,7 @@
 import { initImageEditor, resetImageEditor } from './edit-picture.js';
 import { sendData } from './api.js';
 import { showErrorMessage, showSuccessMessage } from './messages.js';
+import { isEscapeKey } from './utils.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -9,34 +10,66 @@ const HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 const uploadForm = document.querySelector('.img-upload__form');
-const uploadInput = document.querySelector('.img-upload__input');
-const uploadOverlay = document.querySelector('.img-upload__overlay');
-const uploadCancel = document.querySelector('.img-upload__cancel');
-const hashtagInput = document.querySelector('.text__hashtags');
-const commentInput = document.querySelector('.text__description');
-const imagePreview = document.querySelector('.img-upload__preview img');
-const effectsPreviews = document.querySelectorAll('.effects__preview');
+const uploadInput = uploadForm.querySelector('.img-upload__input');
+const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
+const uploadCancel = uploadForm.querySelector('.img-upload__cancel');
+const hashtagInput = uploadForm.querySelector('.text__hashtags');
+const commentInput = uploadForm.querySelector('.text__description');
+const imagePreview = uploadForm.querySelector('.img-upload__preview img');
+const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
 const body = document.body;
 
 const DEFAULT_IMAGE_SRC = imagePreview.src;
 
-
-let cancelHandler = null;
-let keydownHandler = null;
 let currentObjectUrl = null;
 
-
 const applyPreviewToEffects = (url) => {
-  effectsPreviews.forEach((el) => {
-    el.style.backgroundImage = `url("${url}")`;
+  effectsPreviews.forEach((effectPreview) => {
+    effectPreview.style.backgroundImage = `url("${url}")`;
   });
 };
 
 const clearEffectPreviews = () => {
-  effectsPreviews.forEach((el) => {
-    el.style.backgroundImage = '';
+  effectsPreviews.forEach((effectPreview) => {
+    effectPreview.style.backgroundImage = '';
   });
 };
+
+function onUploadCancelClick() {
+  closeUploadModal();
+}
+
+function onDocumentKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    const activeElement = document.activeElement;
+    if (activeElement !== hashtagInput && activeElement !== commentInput) {
+      closeUploadModal();
+    }
+  }
+}
+
+function closeUploadModal() {
+  uploadOverlay.classList.add('hidden');
+  body.classList.remove('modal-open');
+
+  uploadForm.reset();
+  if (window.pristine) {
+    window.pristine.reset();
+  }
+
+  resetImageEditor();
+
+  imagePreview.src = DEFAULT_IMAGE_SRC;
+  clearEffectPreviews();
+
+  if (currentObjectUrl) {
+    URL.revokeObjectURL(currentObjectUrl);
+    currentObjectUrl = null;
+  }
+
+  uploadCancel.removeEventListener('click', onUploadCancelClick);
+  document.removeEventListener('keydown', onDocumentKeydown);
+}
 
 const validateHashtags = (value) => {
   if (!value.trim()) {
@@ -104,58 +137,12 @@ const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
 const getCommentErrorMessage = () => `Длина комментария не может составлять больше ${MAX_COMMENT_LENGTH} символов`;
 
-const closeUploadModal = () => {
-  uploadOverlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-
-  uploadForm.reset();
-  if (window.pristine) {
-    window.pristine.reset();
-  }
-
-  resetImageEditor();
-
-  imagePreview.src = DEFAULT_IMAGE_SRC;
-  clearEffectPreviews();
-
-  if (currentObjectUrl) {
-    URL.revokeObjectURL(currentObjectUrl);
-    currentObjectUrl = null;
-  }
-
-  if (cancelHandler) {
-    uploadCancel.removeEventListener('click', cancelHandler);
-    cancelHandler = null;
-  }
-
-  if (keydownHandler) {
-    document.removeEventListener('keydown', keydownHandler);
-    keydownHandler = null;
-  }
-};
-
-const createCancelHandler = () => () => {
-  closeUploadModal();
-};
-
-const createKeydownHandler = () => (evt) => {
-  if (evt.key === 'Escape') {
-    const activeElement = document.activeElement;
-    if (activeElement !== hashtagInput && activeElement !== commentInput) {
-      closeUploadModal();
-    }
-  }
-};
-
 const showUploadModal = () => {
   uploadOverlay.classList.remove('hidden');
   body.classList.add('modal-open');
 
-  cancelHandler = createCancelHandler();
-  keydownHandler = createKeydownHandler();
-
-  uploadCancel.addEventListener('click', cancelHandler);
-  document.addEventListener('keydown', keydownHandler);
+  uploadCancel.addEventListener('click', onUploadCancelClick);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const onFileInputChange = () => {
@@ -185,13 +172,11 @@ const onFileInputChange = () => {
   applyPreviewToEffects(currentObjectUrl);
 
   showUploadModal();
-  if (typeof resetImageEditor === 'function') {
-    resetImageEditor();
-  }
+  resetImageEditor();
 };
 
 const onInputKeydown = (evt) => {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     evt.stopPropagation();
   }
 };
