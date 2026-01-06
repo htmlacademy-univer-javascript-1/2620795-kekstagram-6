@@ -1,3 +1,5 @@
+import { isEscapeKey } from './utils.js';
+
 const COMMENTS_PER_LOAD = 5;
 
 let currentComments = [];
@@ -51,13 +53,7 @@ const onLoadCommentsClick = () => {
   showMoreComments();
 };
 
-function onDocumentKeydown(evt) {
-  if (evt.key === 'Escape') {
-    closeBigPicture();
-  }
-}
-
-function closeBigPicture() {
+const closeBigPicture = () => {
   const bigPicture = document.querySelector('.big-picture');
   const body = document.body;
 
@@ -68,13 +64,19 @@ function closeBigPicture() {
   shownCommentsCount = 0;
 
   document.removeEventListener('keydown', onDocumentKeydown);
+};
+
+function onDocumentKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    closeBigPicture();
+  }
 }
 
 const showBigPicture = (photo) => {
   const bigPicture = document.querySelector('.big-picture');
   const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
   const likesCount = bigPicture.querySelector('.likes-count');
-  const commentsCount = bigPicture.querySelector('.comments-count'); // span внутри счётчика
+  const commentsCount = bigPicture.querySelector('.comments-count');
   const socialComments = bigPicture.querySelector('.social__comments');
   const socialCaption = bigPicture.querySelector('.social__caption');
   const commentCount = bigPicture.querySelector('.social__comment-count');

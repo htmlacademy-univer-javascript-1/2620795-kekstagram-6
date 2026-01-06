@@ -2,13 +2,13 @@ import { renderPictures, clearPictures } from './miniatures.js';
 import { debounce } from './utils.js';
 
 const RANDOM_PHOTOS_COUNT = 10;
-const RERENDER_DELAY = 500; // 5.3 ТЗ
+const RERENDER_DELAY = 500;
 
 const imgFilters = document.querySelector('.img-filters');
-const filterForm = document.querySelector('.img-filters__form');
-const btnDefault = document.querySelector('#filter-default');
-const btnRandom = document.querySelector('#filter-random');
-const btnDiscussed = document.querySelector('#filter-discussed');
+const filterForm = imgFilters.querySelector('.img-filters__form');
+const btnDefault = filterForm.querySelector('#filter-default');
+const btnRandom = filterForm.querySelector('#filter-random');
+const btnDiscussed = filterForm.querySelector('#filter-discussed');
 
 let originalPhotos = [];
 

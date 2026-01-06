@@ -13,14 +13,15 @@ const EFFECTS = {
   heat: { filter: 'brightness', range: { min: 1, max: 3 }, step: 0.1, unit: '' }
 };
 
-const scaleControlSmaller = document.querySelector('.scale__control--smaller');
-const scaleControlBigger = document.querySelector('.scale__control--bigger');
-const scaleControlValue = document.querySelector('.scale__control--value');
-const imagePreview = document.querySelector('.img-upload__preview img');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
-const effectLevelContainer = document.querySelector('.img-upload__effect-level');
-const effectRadios = document.querySelectorAll('.effects__radio');
+const uploadForm = document.querySelector('.img-upload__form');
+const scaleControlSmaller = uploadForm.querySelector('.scale__control--smaller');
+const scaleControlBigger = uploadForm.querySelector('.scale__control--bigger');
+const scaleControlValue = uploadForm.querySelector('.scale__control--value');
+const imagePreview = uploadForm.querySelector('.img-upload__preview img');
+const effectLevelSlider = uploadForm.querySelector('.effect-level__slider');
+const effectLevelValue = uploadForm.querySelector('.effect-level__value');
+const effectLevelContainer = uploadForm.querySelector('.img-upload__effect-level');
+const effectRadios = uploadForm.querySelectorAll('.effects__radio');
 
 let currentScale = DEFAULT_SCALE;
 let currentEffect = DEFAULT_EFFECT;
@@ -110,7 +111,7 @@ const resetImageEditor = () => {
 
   currentEffect = DEFAULT_EFFECT;
 
-  const noneEffectRadio = document.querySelector('#effect-none');
+  const noneEffectRadio = uploadForm.querySelector('#effect-none');
   if (noneEffectRadio) {
     noneEffectRadio.checked = true;
   }
