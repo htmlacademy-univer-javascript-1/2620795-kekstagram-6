@@ -1,6 +1,6 @@
 import { initImageEditor, resetImageEditor } from './edit-picture.js';
 import { sendData } from './api.js';
-import { showErrorMessage, showSuccessMessage } from './messages.js';
+import { showSuccessMessage, showUploadErrorMessage } from './messages.js';
 import { isEscapeKey } from './utils.js';
 
 const MAX_HASHTAG_COUNT = 5;
@@ -202,7 +202,7 @@ const onFormSubmit = async (evt) => {
 
     showSuccessMessage();
   } catch (err) {
-    showErrorMessage();
+    showUploadErrorMessage();
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = initialText;

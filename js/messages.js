@@ -19,9 +19,12 @@ const showLoadError = (message = 'Не удалось загрузить дан�
   body.appendChild(banner);
 };
 
-const setupClosableOverlay = (element, closeButtonSelector) => {
+const setupClosableOverlay = (element, closeButtonSelector, stopPropagation = false) => {
   function onDocumentKeydown(evt) {
     if (isEscapeKey(evt)) {
+      if (stopPropagation) {
+        evt.stopPropagation();
+      }
       close();
     }
   }
@@ -67,4 +70,18 @@ const showErrorMessage = () => {
   return root;
 };
 
-export { showSuccessMessage, showErrorMessage, showLoadError };
+const showUploadErrorMessage = () => {
+  const template = document.querySelector('#error');
+  const fragment = template.content.cloneNode(true);
+  const root = fragment.querySelector('.error');
+  root.style.zIndex = '3';
+  const errorButton = root.querySelector('.error__button');
+  if (errorButton) {
+    errorButton.textContent = 'Попробовать снова';
+  }
+  body.appendChild(fragment);
+  setupClosableOverlay(document.querySelector('.error'), '.error__button', true);
+  return root;
+};
+
+export { showSuccessMessage, showErrorMessage, showUploadErrorMessage, showLoadError };
