@@ -22,6 +22,7 @@ const body = document.body;
 const DEFAULT_IMAGE_SRC = imagePreview.src;
 
 let currentObjectUrl = null;
+let isUploadErrorShown = false;
 
 const applyPreviewToEffects = (url) => {
   effectsPreviews.forEach((effectPreview) => {
@@ -41,6 +42,9 @@ function onUploadCancelClick() {
 
 function onDocumentKeydown(evt) {
   if (isEscapeKey(evt)) {
+    if (isUploadErrorShown) {
+      return;
+    }
     const activeElement = document.activeElement;
     if (activeElement !== hashtagInput && activeElement !== commentInput) {
       closeUploadModal();
@@ -69,6 +73,7 @@ function closeUploadModal() {
 
   uploadCancel.removeEventListener('click', onUploadCancelClick);
   document.removeEventListener('keydown', onDocumentKeydown);
+  isUploadErrorShown = false;
 }
 
 const validateHashtags = (value) => {
@@ -202,7 +207,10 @@ const onFormSubmit = async (evt) => {
 
     showSuccessMessage();
   } catch (err) {
-    showUploadErrorMessage();
+    isUploadErrorShown = true;
+    showUploadErrorMessage(() => {
+      isUploadErrorShown = false;
+    });
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = initialText;
